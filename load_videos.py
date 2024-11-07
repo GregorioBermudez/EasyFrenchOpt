@@ -42,14 +42,11 @@ def create_frequency_rank(video_collection):
 
 folder_path = 'French Transcripts'
 video_collection = load_videos_from_folder(folder_path)
+video_collection.finalize()
 frequency_rank = create_frequency_rank(video_collection)
 highest_ranked_words = list(frequency_rank.keys())[:int(len(frequency_rank)*0.01)]
 
-# for video in video_collection.videos:
-#     video.profiling = sum(video.word_counts[word] for word in highest_ranked_words)/video.total_words
-#     print(f'{video.title}: Profiling {video.profiling}, TTR {video.TTR}')
-
-for word in list(frequency_rank.keys())[:500]:  # Show the first 10 words
-    print(f"Word: {word}, Rank: {frequency_rank[word]}")
+for video in video_collection.videos:
+    video.profiling = sum(video.word_counts[word] for word in highest_ranked_words)/video.total_words
 
 print(f'Amount of videos: {video_collection.total_videos()}')

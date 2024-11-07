@@ -1,7 +1,6 @@
 from collections import Counter
 from typing import List, Dict
 
-
 class Video:
     def __init__(self, index: int, title: str, transcript: str):
         self.index = index
@@ -12,13 +11,15 @@ class Video:
         self.profiling = None
 
     def __repr__(self):
-        return f"Video({self.index}, '{self.title}', {self.total_words} words)"
+        return f"Video({self.index}, '{self.title}', {self.total_words} words, '{self.difficulty}')"
 
 class VideoCollection:
     def __init__(self):
         self.videos: List[Video] = []
         self.global_word_counts: Dict[str, int] = Counter()
         self.title_to_index: Dict[str, int] = {}
+        self.word_to_index: Dict[str, int] = {}
+        self.index_to_word: Dict[int, str] = {}
 
     def add_video(self, title: str, transcript: str):
         index = len(self.videos)
@@ -26,6 +27,11 @@ class VideoCollection:
         self.videos.append(video)
         self.global_word_counts.update(video.word_counts)
         self.title_to_index[title] = index
+
+    def finalize(self):
+        unique_words = list(self.global_word_counts.keys())
+        self.word_to_index = {word: idx for idx, word in enumerate(unique_words)}
+        self.index_to_word = {idx: word for word, idx in self.word_to_index.items()}
 
     def get_video(self, identifier) -> Video:
         if isinstance(identifier, int):
@@ -37,6 +43,9 @@ class VideoCollection:
 
     def total_videos(self) -> int:
         return len(self.videos)
+
+    def total_words(self) -> int:
+        return len(self.word_to_index)
 
 # Example usage:
 collection = VideoCollection()
